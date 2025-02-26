@@ -80,7 +80,7 @@ export default function BlogPost({ params }) {
   const post = defaultPost;
 
   return (
-    <article className="max-w-3xl mx-auto px-4 py-16">
+    <article className="w-full   py-16">
       {/* Meta Tags */}
       <Head>
         <title>{post.meta_title}</title>

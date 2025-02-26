@@ -35,7 +35,7 @@ export default function BlogEditor() {
     if (!place) return;
     try {
       const response = await fetch(
-        `https://api.geoapify.com/v1/geocode/autocomplete?text=${place}&apiKey=6f87d12f830d49b4becaa344a30bc61b&type=city&limit=3`
+        `https://api.geoapify.com/v1/geocode/autocomplete?text=${place}&apiKey=6f87d12f830d49b4becaa344a30bc61b&type=city&limit=5`
       );
       const data = await response.json();
       setSuggestions(data.features || []);
@@ -62,17 +62,13 @@ export default function BlogEditor() {
     }
     setLoading(true);
     try {
-      const response = await fetch("/api/admin/blog/create", {
+      const response = await fetch("/api/admin/blog/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          place: query.place,
-          state: query.state,
-          country: query.country,
-          latitude: query.latitude,
-          longitude: query.longitude,
+
           ...articleData,
         }),
       });
@@ -109,7 +105,9 @@ export default function BlogEditor() {
       }
 
       const data = await response.json();
-      setArticleData(data);
+      setArticleData(data.data);
+      console.log(articleData);
+      
       toast.success("Article generated successfully!");
       setIsArticleGenerated(true);
     } catch (error) {

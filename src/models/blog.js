@@ -1,6 +1,6 @@
+// models/Blog.js
 import mongoose from "mongoose";
 import slugify from "slugify";
-
 
 // Subsection schema
 const SubSectionSchema = new mongoose.Schema({
@@ -24,16 +24,27 @@ const ArticleSchema = new mongoose.Schema({
   sections: [SectionSchema],
 });
 
-// Blog schema with new fields
+// Blog schema with references to Country, State, and Place
 const BlogSchema = new mongoose.Schema(
   {
     meta_title: String,
     meta_description: String,
-    country: String,
-    state: String,
-    place: String,
-    latitude: Number,
-    longitude: Number,
+    country: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "Country", 
+      required: false
+    },
+    state: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "State", 
+      required: false 
+    },
+    place: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "Place", 
+      required: false,
+
+    },
     total_views: { type: Number, default: 0 },
     article: ArticleSchema,
     slug: { type: String, unique: true },
@@ -50,17 +61,14 @@ BlogSchema.pre("save", async function (next) {
     let slug = baseSlug;
     let counter = 1;
 
-    // Ensure uniqueness
     while (await mongoose.models.Blog.findOne({ slug })) {
       slug = `${baseSlug}-${counter}`;
       counter++;
     }
-
     this.slug = slug;
   }
   next();
 });
 
 const Blog = mongoose.models.Blog || mongoose.model("Blog", BlogSchema);
-
 export default Blog;

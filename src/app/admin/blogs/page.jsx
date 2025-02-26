@@ -1,22 +1,23 @@
-"use client"
-import { useState, useEffect } from "react"
-import { Search, Power, ChevronLeft, ChevronRight } from "lucide-react"
-import Link from "next/link"
-import { toast } from "react-hot-toast"
+"use client";
+
+import { useState, useEffect } from "react";
+import { Search, Power, ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { toast } from "react-hot-toast";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   Table,
   TableHeader,
@@ -24,76 +25,87 @@ import {
   TableHead,
   TableBody,
   TableCell,
-} from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 function BlogManagementDashboard() {
-  const [blogs, setBlogs] = useState([])
-  const [search, setSearch] = useState("")
-  const [page, setPage] = useState(1)
-  const [loading, setLoading] = useState(false)
-  const [totalPages, setTotalPages] = useState(1)
-  const [activeFilter, setActiveFilter] = useState("all")
-  const [deletedFilter, setDeletedFilter] = useState("all")
-  const limit = 5
+  const [blogs, setBlogs] = useState([]);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [deletedFilter, setDeletedFilter] = useState("all");
+  const limit = 5;
 
   const handleDeleteBlog = async (slug) => {
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await fetch(`/api/admin/blog/${slug}`, {
         method: "DELETE",
-      })
+      });
       if (response.ok) {
-        toast.success("Blog deleted successfully")
-        fetchBlogs()
+        toast.success("Blog deleted successfully");
+        fetchBlogs();
       } else {
-        const errorData = await response.json()
-        const errorMessage = errorData.message || "Failed to delete blog"
-        throw new Error(errorMessage)
+        const errorData = await response.json();
+        const errorMessage = errorData.message || "Failed to delete blog";
+        throw new Error(errorMessage);
       }
     } catch (error) {
-      console.error(error)
-      toast.error(error.message || "Failed to delete blog")
+      console.error(error);
+      toast.error(error.message || "Failed to delete blog");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const fetchBlogs = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const queryParams = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
         search,
-        isActive: activeFilter !== "all" ? activeFilter : "",
-        isDeleted: deletedFilter !== "all" ? deletedFilter : "",
-      })
+      });
 
-      const response = await fetch(`/api/admin/blog?${queryParams}`)
-      const data = await response.json()
-      if (data.success) {
-        setBlogs(data.blogs)
-        setTotalPages(data.totalPages)
+      // Only add isActive if it's explicitly set to "true" or "false"
+      if (activeFilter !== "all") {
+        queryParams.append("isActive", activeFilter);
+      }
+
+      // Only add isDeleted if it's explicitly set to "true" or "false"
+      if (deletedFilter !== "all") {
+        queryParams.append("isDeleted", deletedFilter);
+      }
+
+      const response = await fetch(`/api/admin/blog?${queryParams}`);
+      const data = await response.json();
+      
+
+      if (data) {
+        setBlogs(data.data);
+        setTotalPages(data.totalPages);
       } else {
-        toast.error(data.message || "Failed to fetch blogs")
+        console.error(data.message);
+        toast.error(data.message || "Failed to fetch blogs");
       }
     } catch (error) {
-      console.error("Error fetching blogs:", error)
-      toast.error("Failed to fetch blogs")
+      console.error("Error fetching blogs:", error);
+      toast.error("Failed to fetch blogs");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchBlogs()
-  }, [page, search, activeFilter, deletedFilter])
+    fetchBlogs();
+  }, [page, search, activeFilter, deletedFilter]);
 
   const handleToggleActive = async (blogId) => {
-    const blog = blogs.find((b) => b._id === blogId)
-    if (!blog) return
+    const blog = blogs.find((b) => b._id === blogId);
+    if (!blog) return;
 
     try {
       const response = await fetch(`/api/admin/blog/${blogId}`, {
@@ -104,21 +116,23 @@ function BlogManagementDashboard() {
         body: JSON.stringify({
           isActive: !blog.isActive,
         }),
-      })
+      });
 
       if (response.ok) {
-        setBlogs(blogs.map((b) => (b._id === blogId ? { ...b, isActive: !b.isActive } : b)))
-        toast.success(`Blog ${blog.isActive ? "deactivated" : "activated"} successfully`)
+        setBlogs(blogs.map((b) =>
+          b._id === blogId ? { ...b, isActive: !b.isActive } : b
+        ));
+        toast.success(`Blog ${blog.isActive ? "deactivated" : "activated"} successfully`);
       } else {
-        const errorData = await response.json()
-        const errorMessage = errorData.message || "Failed to update blog status"
-        throw new Error(errorMessage)
+        const errorData = await response.json();
+        const errorMessage = errorData.message || "Failed to update blog status";
+        throw new Error(errorMessage);
       }
     } catch (error) {
-      console.error("Error updating blog status:", error)
-      toast.error(error.message || "Failed to update blog status")
+      console.error("Error updating blog status:", error);
+      toast.error(error.message || "Failed to update blog status");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
@@ -185,9 +199,9 @@ function BlogManagementDashboard() {
                   <TableBody>
                     {blogs.length > 0 ? (
                       blogs.map((blog) => (
-                        <TableRow key={blog._id} hover>
+                        <TableRow key={blog._id}>
                           <TableCell>
-                            <Link 
+                            <Link
                               href={`/admin/blogs/${blog.slug}`}
                               className="hover:underline"
                             >
@@ -265,7 +279,7 @@ function BlogManagementDashboard() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
 
-export default BlogManagementDashboard
+export default BlogManagementDashboard;
