@@ -13,7 +13,7 @@ const Layout = ({ children }) => {
       </section>
 
       {/* Second Section (Main Content) - Blog page */}
-      <section className="sm:w-6/12 w-full p-4 sm:p-1">
+      <section className="sm:w-6/12 w-full p-5 sm:p-1">
         <div className="w-full">
           {children}
         </div>
