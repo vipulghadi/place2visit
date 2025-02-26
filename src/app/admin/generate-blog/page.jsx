@@ -24,7 +24,7 @@ export default function BlogEditor() {
     longitude: "",
   });
 
-  const [articleData, setArticleData] = useState(null);
+  const [articleData, setArticleData] = useState(null); // Initially null
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -56,8 +56,8 @@ export default function BlogEditor() {
   };
 
   const SaveBlog = async () => {
-    if (!query.place || !query.state || !query.country) {
-      toast.error("Invalid operation");
+    if (!query.place || !query.state || !query.country || !articleData) {
+      toast.error("Invalid operation: Missing required fields or article data");
       return;
     }
     setLoading(true);
@@ -67,10 +67,7 @@ export default function BlogEditor() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-
-          ...articleData,
-        }),
+        body: JSON.stringify(articleData), // Send full articleData
       });
       if (response.ok) {
         toast.success("Blog created successfully");
@@ -92,7 +89,6 @@ export default function BlogEditor() {
     }
 
     setLoading(true);
-
     try {
       const response = await fetch("/api/admin/generate-blog", {
         method: "POST",
@@ -105,9 +101,8 @@ export default function BlogEditor() {
       }
 
       const data = await response.json();
-      setArticleData(data.data);
-      console.log(articleData);
-      
+      setArticleData(data.data); // Set the full data object
+      console.log("Generated article:", data.data);
       toast.success("Article generated successfully!");
       setIsArticleGenerated(true);
     } catch (error) {
@@ -140,7 +135,7 @@ export default function BlogEditor() {
     const newSection = {
       heading: "New Section",
       text: "",
-      image: "",
+      images: [], // Initialize as array
       subsections: [],
     };
     setArticleData({
@@ -163,7 +158,7 @@ export default function BlogEditor() {
   };
 
   const addSubsection = (sectionIndex) => {
-    const newSubsection = { title: "New Subsection", text: "", image: "" };
+    const newSubsection = { title: "New Subsection", text: "", images: [] };
     const updatedSections = [...articleData.article.sections];
     updatedSections[sectionIndex].subsections.push(newSubsection);
     setArticleData({
@@ -183,9 +178,102 @@ export default function BlogEditor() {
     });
   };
 
+  const addCoverImage = () => {
+    const updatedCoverImages = [...articleData.article.cover_images, ""];
+    setArticleData({
+      ...articleData,
+      article: { ...articleData.article, cover_images: updatedCoverImages },
+    });
+  };
+
+  const updateCoverImage = (index, value) => {
+    const updatedCoverImages = [...articleData.article.cover_images];
+    updatedCoverImages[index] = value;
+    setArticleData({
+      ...articleData,
+      article: { ...articleData.article, cover_images: updatedCoverImages },
+    });
+  };
+
+  const removeCoverImage = (index) => {
+    const updatedCoverImages = articleData.article.cover_images.filter(
+      (_, i) => i !== index
+    );
+    setArticleData({
+      ...articleData,
+      article: { ...articleData.article, cover_images: updatedCoverImages },
+    });
+  };
+
+  const addSectionImage = (sectionIndex) => {
+    const updatedSections = [...articleData.article.sections];
+    updatedSections[sectionIndex].images = [
+      ...(updatedSections[sectionIndex].images || []),
+      "",
+    ];
+    setArticleData({
+      ...articleData,
+      article: { ...articleData.article, sections: updatedSections },
+    });
+  };
+
+  const updateSectionImage = (sectionIndex, imageIndex, value) => {
+    const updatedSections = [...articleData.article.sections];
+    updatedSections[sectionIndex].images[imageIndex] = value;
+    setArticleData({
+      ...articleData,
+      article: { ...articleData.article, sections: updatedSections },
+    });
+  };
+
+  const removeSectionImage = (sectionIndex, imageIndex) => {
+    const updatedSections = [...articleData.article.sections];
+    updatedSections[sectionIndex].images = updatedSections[
+      sectionIndex
+    ].images.filter((_, i) => i !== imageIndex);
+    setArticleData({
+      ...articleData,
+      article: { ...articleData.article, sections: updatedSections },
+    });
+  };
+
+  const addSubsectionImage = (sectionIndex, subIndex) => {
+    const updatedSections = [...articleData.article.sections];
+    updatedSections[sectionIndex].subsections[subIndex].images = [
+      ...(updatedSections[sectionIndex].subsections[subIndex].images || []),
+      "",
+    ];
+    setArticleData({
+      ...articleData,
+      article: { ...articleData.article, sections: updatedSections },
+    });
+  };
+
+  const updateSubsectionImage = (sectionIndex, subIndex, imageIndex, value) => {
+    const updatedSections = [...articleData.article.sections];
+    updatedSections[sectionIndex].subsections[subIndex].images[imageIndex] =
+      value;
+    setArticleData({
+      ...articleData,
+      article: { ...articleData.article, sections: updatedSections },
+    });
+  };
+
+  const removeSubsectionImage = (sectionIndex, subIndex, imageIndex) => {
+    const updatedSections = [...articleData.article.sections];
+    updatedSections[sectionIndex].subsections[subIndex].images =
+      updatedSections[sectionIndex].subsections[subIndex].images.filter(
+        (_, i) => i !== imageIndex
+      );
+    setArticleData({
+      ...articleData,
+      article: { ...articleData.article, sections: updatedSections },
+    });
+  };
+
   return (
     <div className="container mx-auto py-8">
-      <Card className="mb-8  mx-2">
+      <Card className="mb-8 mx-2">
         <CardHeader>
           <CardTitle className="flex items-center justify-center text-2xl">
             <PenSquare className="mr-2 h-6 w-6" />
@@ -212,8 +300,8 @@ export default function BlogEditor() {
                       className="p-2 hover:bg-accent cursor-pointer"
                       onClick={() => handleSelectPlace(suggestion)}
                     >
-                      {suggestion.properties.city}, {suggestion.properties.state},{" "}
-                      {suggestion.properties.country}
+                      {suggestion.properties.city}, {suggestion.properties.state}
+                      , {suggestion.properties.country}
                     </div>
                   ))}
                 </div>
@@ -240,21 +328,14 @@ export default function BlogEditor() {
               onChange={(e) => setQuery({ ...query, latitude: e.target.value })}
             />
           </div>
-          
+
           <div className="flex gap-3">
-            <Button
-              onClick={fetchBlogContent}
-              disabled={loading}
-            >
+            <Button onClick={fetchBlogContent} disabled={loading}>
               {loading ? "Generating..." : "Generate Blog Content"}
             </Button>
-            
             {isArticleGenerated && (
               <>
-                <Button
-                  onClick={SaveBlog}
-                  disabled={loading}
-                >
+                <Button onClick={SaveBlog} disabled={loading}>
                   {loading ? "Saving..." : "Save Blog"}
                 </Button>
                 <BlogPreviewModal data={articleData} />
@@ -270,6 +351,42 @@ export default function BlogEditor() {
             <CardTitle>{articleData.article.title}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Cover Images */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Cover Images</h3>
+              {articleData.article.cover_images.map((image, index) => (
+                <div key={index} className="flex gap-2 items-center">
+                  <Input
+                    placeholder="Cover Image URL"
+                    value={image}
+                    onChange={(e) => updateCoverImage(index, e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => {
+                      setPreviewImage(image);
+                      setModalOpen(true);
+                    }}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => removeCoverImage(index)}
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button variant="outline" onClick={addCoverImage}>
+                <ImagePlus className="h-4 w-4 mr-2" /> Add Cover Image
+              </Button>
+            </div>
+
+            {/* Sections */}
             {articleData.article.sections.map((section, secIndex) => (
               <Card key={secIndex}>
                 <CardContent className="p-4">
@@ -300,23 +417,45 @@ export default function BlogEditor() {
                     className="mb-4"
                   />
 
-                  <div className="flex gap-2 mb-4">
-                    <Input
-                      placeholder="Image URL"
-                      value={section.image}
-                      onChange={(e) =>
-                        handleSectionChange(secIndex, "image", e.target.value)
-                      }
-                    />
+                  {/* Section Images */}
+                  <div className="space-y-2 mb-4">
+                    {section.images.map((image, imgIndex) => (
+                      <div key={imgIndex} className="flex gap-2 items-center">
+                        <Input
+                          placeholder="Section Image URL"
+                          value={image}
+                          onChange={(e) =>
+                            updateSectionImage(secIndex, imgIndex, e.target.value)
+                          }
+                        />
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => {
+                            setPreviewImage(image);
+                            setModalOpen(true);
+                          }}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => removeSectionImage(secIndex, imgIndex)}
+                        >
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
                     <Button
                       variant="outline"
-                      size="icon"
-                      onClick={() => setModalOpen(true)}
+                      onClick={() => addSectionImage(secIndex)}
                     >
-                      <Eye className="h-4 w-4" />
+                      <ImagePlus className="h-4 w-4 mr-2" /> Add Section Image
                     </Button>
                   </div>
 
+                  {/* Subsections */}
                   <div className="space-y-4">
                     {section.subsections.map((sub, subIndex) => (
                       <Card key={subIndex} className="bg-accent/50">
@@ -358,25 +497,55 @@ export default function BlogEditor() {
                             className="mb-4"
                           />
 
-                          <div className="flex gap-2">
-                            <Input
-                              placeholder="Subsection Image URL"
-                              value={sub.image}
-                              onChange={(e) =>
-                                handleSubsectionChange(
-                                  secIndex,
-                                  subIndex,
-                                  "image",
-                                  e.target.value
-                                )
-                              }
-                            />
+                          {/* Subsection Images */}
+                          <div className="space-y-2">
+                            {sub.images.map((image, imgIndex) => (
+                              <div
+                                key={imgIndex}
+                                className="flex gap-2 items-center"
+                              >
+                                <Input
+                                  placeholder="Subsection Image URL"
+                                  value={image}
+                                  onChange={(e) =>
+                                    updateSubsectionImage(
+                                      secIndex,
+                                      subIndex,
+                                      imgIndex,
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  onClick={() => {
+                                    setPreviewImage(image);
+                                    setModalOpen(true);
+                                  }}
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="icon"
+                                  onClick={() =>
+                                    removeSubsectionImage(
+                                      secIndex,
+                                      subIndex,
+                                      imgIndex
+                                    )
+                                  }
+                                >
+                                  <Trash className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))}
                             <Button
                               variant="outline"
-                              size="icon"
-                              onClick={() => setModalOpen(true)}
+                              onClick={() => addSubsectionImage(secIndex, subIndex)}
                             >
-                              <Eye className="h-4 w-4" />
+                              <ImagePlus className="h-4 w-4 mr-2" /> Add Subsection Image
                             </Button>
                           </div>
                         </CardContent>

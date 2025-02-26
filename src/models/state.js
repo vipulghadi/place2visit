@@ -8,6 +8,7 @@ const StateSchema = new mongoose.Schema({
     ref: "Country", 
     required: false
   }, 
+  image_urls: { type: [String], default: [] },
   isActive: { type: Boolean, default: true },
   
 }, { timestamps: true });

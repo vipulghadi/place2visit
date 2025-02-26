@@ -16,6 +16,7 @@ const PlaceSchema = new mongoose.Schema({
   latitude: { type: Number },
   longitude: { type: Number },
   isActive: { type: Boolean, default: true },
+  image_urls: { type: [String], default: [] },
 }, { timestamps: true });
 
 

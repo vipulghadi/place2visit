@@ -99,6 +99,7 @@ export async function POST(request) {
       meta_title,
       place: placeName,
       state: stateName,
+      tags,
     } = data;
 
     // Validation: Ensure required fields are provided
@@ -172,10 +173,12 @@ export async function POST(request) {
       place: place._id,
       latitude: latitude || place.latitude,
       longitude: longitude || place.longitude,
-      total_views: 0,
+      view_count: 0,
+      like_count:0,
+      tags:tags || [],
       article: {
         title: article.title,
-        cover_image: article.cover_image || "",
+        cover_image: article.cover_image || [],
         sections: article.sections || [],
       },
       isActive: true,

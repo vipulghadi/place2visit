@@ -45,9 +45,9 @@ export default function RootLayout({ children }) {
         <meta name="twitter:creator" content={metadata.twitter.creator} />
       </head>
       <body>
-        <MantineProvider >
+        
           {children}
-        </MantineProvider>
+    
       </body>
     </html>
   );

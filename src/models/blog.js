@@ -6,21 +6,21 @@ import slugify from "slugify";
 const SubSectionSchema = new mongoose.Schema({
   title: String,
   text: String,
-  image: String,
+  images: {type:[String],default:[]},
 });
 
 // Section schema
 const SectionSchema = new mongoose.Schema({
   heading: String,
   text: String,
-  image: String,
+  images: {type:[String],default:[]},
   subsections: [SubSectionSchema],
 });
 
 // Article schema
 const ArticleSchema = new mongoose.Schema({
   title: String,
-  cover_image: String,
+  cover_images: {type:[String],default:[]},
   sections: [SectionSchema],
 });
 
@@ -45,9 +45,11 @@ const BlogSchema = new mongoose.Schema(
       required: false,
 
     },
-    total_views: { type: Number, default: 0 },
     article: ArticleSchema,
     slug: { type: String, unique: true },
+    view_count:{ type: Number, default: 0 },
+    like_count:{ type: Number, default: 0 },
+    tags:{type:[String],default:[]},
     isActive: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
   },
