@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { Trash, Plus, Eye, PenSquare, ImagePlus } from "lucide-react";
-import BlogPreviewModal from "@/components/BlogPreviewModal";
+import BlogPreviewModal from "@/components/serverside/BlogPreviewModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
