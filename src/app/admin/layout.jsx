@@ -1,9 +1,9 @@
 'use client';
 
 import { Toaster } from 'react-hot-toast';
-import AdminNavbar from "../../components/AdminNavbar";
-import AdminSidebar from "../../components/AdminSidebar";
-import AdminSidebarMobile from "../../components/AdminSidebarMobile";
+import AdminNavbar from "../../components/serverside/AdminNavbar";
+import AdminSidebar from "../../components/serverside/AdminSidebar";
+import AdminSidebarMobile from "../../components/serverside/AdminSidebarMobile";
 
 export default function RootLayout({ children }) {
   return (

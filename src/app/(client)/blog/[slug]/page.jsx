@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BlogCard } from "@/components/BlogCard";
+import { BlogCard } from "@/components/clientside/BlogCard";
 import Head from "next/head";  // Importing the correct Head component
 
 // Static content for default fallback when no matching post is found

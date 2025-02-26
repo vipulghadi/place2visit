@@ -6,10 +6,10 @@ import { Menu } from "lucide-react"
 
 export default function Component() {
   return (
-    <header className="flex h-16 w-full shrink-0 items-center justify-between px-4 md:px-6 border-b">
+    <header className="flex h-16  shrink-0 items-center justify-between px-4 md:px-6 border-b fixed top-0 left-0 w-screen z-50 bg-white">
       <div className="flex items-center gap-2">
         <Image src="/logo.png" alt="Place2Visit Logo" width={40} height={40} className="object-contain" />
-        <span className="font-semibold text-xl">Place2Visit</span>
+        <span className="font-bold text-2xl ">Place2Visit</span>
       </div>
 
       <div className="flex items-center gap-6">

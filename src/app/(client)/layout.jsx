@@ -1,7 +1,7 @@
 // app/layout.jsx
 import React from "react";
 import Head from "next/head"; // Import Head for favicon and metadata
-import NavbarClient from "../../components/ClientNavbar";
+import NavbarClient from "../../components/clientside/ClientNavbar";
 
 // This is your global metadata that will apply to all pages
 export const metadata = {
@@ -29,7 +29,7 @@ export const metadata = {
 
 const Layout = ({ children }) => {
   return (
-    <main className="flex flex-col min-h-screen w-full">
+    <main className="flex flex-col min-h-screen w-full relative">
       <Head>
         {/* Favicon for browser tab */}
         <link rel="icon" href="/favicon.ico" />
