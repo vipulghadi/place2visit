@@ -8,11 +8,13 @@ export default function Home() {
   return (
     <div>
       <Hero />
-    
+      
       <TopPlacesToVisitNow/>
-      <NewsLetter/>
-      <NearYou/>
       <ArticleOfTheDay/>
+     
+      <NearYou/>
+      <NewsLetter/>
+      
      
     </div>
   );

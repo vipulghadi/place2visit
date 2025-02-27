@@ -30,7 +30,7 @@ export const metadata = {
 
 const Layout = ({ children }) => {
   return (
-    <main className="flex flex-col min-h-screen w-screen relative">
+    <main className="w-screen relative overflow-hidden">
       <Head>
         {/* Favicon for browser tab */}
         <link rel="icon" href="/favicon.ico" />

@@ -19,10 +19,10 @@ export default function Hero() {
   // Array of 5 background image URLs
   const backgroundImages = [
     "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3", // Mountain
-    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3", // Beach
-    "https://images.unsplash.com/photo-1530789253388-582c481c54b0?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3", // City
+    "https://plus.unsplash.com/premium_photo-1661919589683-f11880119fb7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Beach
+    "https://images.unsplash.com/photo-1595928607828-6fdaee9c0942?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // City
     "https://images.unsplash.com/photo-1498307833015-e7b400441eb8?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3", // Forest
-    "https://images.unsplash.com/photo-1472214103451-9374e2d5e2d5?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3", // Desert
+    "https://images.unsplash.com/photo-1618805714320-f8825019c1be?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Desert
   ];
 
   // Sample list of destinations for suggestions
@@ -63,7 +63,7 @@ export default function Hero() {
         {backgroundImages.map((image, index) => (
           <div
             key={index}
-            className="absolute inset-0 bg-black/50 transition-opacity duration-2000 ease-in-out"
+            className="absolute inset-0 bg-black/70 transition-opacity duration-2000 ease-in-out overflow-hidden w-full"
             style={{
               backgroundImage: `url('${image}')`,
               backgroundSize: "cover",
@@ -79,10 +79,10 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-20 text-center px-4 max-w-3xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 fade-in">
-          Discover Your Next Adventure
+        Your Ultimate Travel Guides
         </h1>
         <p className="text-xl mb-8 slide-up">
-          Explore the world's most beautiful destinations
+        Discover Articles on Amazing Places Around the Globe
         </p>
         <form onSubmit={handleSearch} className="slide-up">
           <div className="flex max-w-xl mx-auto relative">
