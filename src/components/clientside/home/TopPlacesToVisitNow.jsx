@@ -56,7 +56,7 @@ export default function TopPlacesToVisitNow() {
   }, []);
 
   return (
-    <div className="w-full mt-16 mb-5 px-6 bg-gradient-to-r from-indigo-50 to-purple-50 py-8">
+    <div className="w-full  mb-5 px-6 bg-gradient-to-r from-indigo-50 to-purple-50 py-8">
       <Carousel className="sm:w-[90%] w-[95%] mx-auto">
         <h2 className="font-semibold sm:text-2xl text-2xl text-left mb-8 ">
           Top Travel Articles to Read Right Now
