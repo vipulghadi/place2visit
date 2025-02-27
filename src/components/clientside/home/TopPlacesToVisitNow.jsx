@@ -58,14 +58,14 @@ export default function TopPlacesToVisitNow() {
     <div className="w-full  mt-16 mb-5 px-6 ">
       
       <Carousel className="sm:w-[90%] w-[95%]  mx-auto">
-      <h2 className="font-semibold sm:text-3xl text-2xl  text-left mb-8">
-        Top Places to Visit Right Now
+      <h2 className="font-semibold sm:text-2xl text-2xl  text-left mb-8">
+        Top places to visit right now
       </h2>
         <CarouselContent className="-ml-2">
           {places.map((place, index) => (
             <CarouselItem
               key={index}
-              className=" basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+              className=" basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
             >
               <div className="">
                 <Card className="border-purple-300 hover:shadow-lg hover:shadow-purple-200 transition-shadow border-none">

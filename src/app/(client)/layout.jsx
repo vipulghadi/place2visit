@@ -2,6 +2,7 @@
 import React from "react";
 import Head from "next/head"; // Import Head for favicon and metadata
 import NavbarClient from "../../components/clientside/ClientNavbar";
+import Footer from "@/components/clientside/Footer";
 
 // This is your global metadata that will apply to all pages
 export const metadata = {
@@ -29,7 +30,7 @@ export const metadata = {
 
 const Layout = ({ children }) => {
   return (
-    <main className="flex flex-col min-h-screen w-full relative">
+    <main className="flex flex-col min-h-screen w-screen relative">
       <Head>
         {/* Favicon for browser tab */}
         <link rel="icon" href="/favicon.ico" />
@@ -42,6 +43,7 @@ const Layout = ({ children }) => {
 
       {/* Main Content */}
       {children}
+      <Footer/>
     </main>
   );
 };
