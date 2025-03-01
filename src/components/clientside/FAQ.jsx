@@ -41,7 +41,7 @@ import {
   
   export default function FAQ() {
     return (
-      <div className="w-full  mx-auto py-8 px-4 bg-gray-100">
+      <div className="w-full  mx-auto py-8 sm:px-20 px-3 bg-gray-100">
         <h2 className="text-3xl font-bold text-center mb-6 flex items-center justify-center">
           Frequently Asked Questions
         </h2>

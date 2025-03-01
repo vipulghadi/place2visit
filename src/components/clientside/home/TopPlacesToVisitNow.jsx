@@ -57,7 +57,7 @@ export default function TopPlacesToVisitNow() {
   }, []);
 
   return (
-    <div className="w-full mb-5 px-6 bg-muted py-8">
+    <div className="w-full mb-5 px-6 bg-white py-8">
       <Carousel className="w-[95%] sm:w-[90%] mx-auto">
         <h2 className="font-semibold text-2xl sm:text-2xl text-left mb-8">
           Top Travel Articles to Read Right Now
@@ -68,15 +68,15 @@ export default function TopPlacesToVisitNow() {
               key={index}
               className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 pl-2"
             >
-              <Card className="overflow-hidden hover:shadow-md transition-all duration-300 group">
-                <CardContent className="p-0">
+              <Card className="overflow-hidden hover:shadow-md transition-all duration-300 group rounded-none">
+                <CardContent className="p-3">
                   <div className="relative w-full h-48 overflow-hidden">
                     <Image
                       src={place.image || "/placeholder.svg"}
                       alt={`${place.name} travel guide`}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                      className="object-cover rounded-t-lg group-hover:scale-105 transition-transform duration-500 ease-in-out"
+                      className="object-cover  group-hover:scale-105 transition-transform duration-500 ease-in-out rounded-none"
                     />
                   </div>
                   <div className="p-4 bg-card">

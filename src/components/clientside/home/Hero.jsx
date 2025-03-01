@@ -22,12 +22,14 @@ export default function HeroSection() {
 
     return (
         <section className="flex flex-col items-center text-center gap-10 px-6 md:px-16 bg-gray-100 mt-16 sm:h-screen">
+    
+        <span className="bg-green-700 mt-3 px-3 py-2 rounded-full text-white">Explore Nearby you</span>
             {/* Animated Heading */}
             <motion.h1 
                 initial={{ opacity: 0, y: -20 }} 
                 animate={{ opacity: 1, y: 0 }} 
                 transition={{ duration: 0.7, ease: "easeOut" }}
-                className="text-4xl md:text-7xl font-bold leading-tight mt-20"
+                className="text-4xl md:text-7xl font-bold leading-tight mt-8"
             >
                 Discover <span className="text-green-500">Amazing Places</span> Around the World
             </motion.h1>

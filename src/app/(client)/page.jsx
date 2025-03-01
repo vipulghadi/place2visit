@@ -14,7 +14,7 @@ export default function Home() {
       <TopPlacesToVisitNow/>
       <ArticleOfTheDay/>
       <NearYou/>
-      <NewsLetter/>
+
       <WhyToRead/>
       <FAQ/>
 
