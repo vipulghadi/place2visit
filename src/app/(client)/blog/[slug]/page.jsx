@@ -128,6 +128,17 @@ export default function BlogPost({ params }) {
           ))}
         </div>
       ))}
+      
+
+      <section className="mt-2">
+        <h1 className="font-semibold">Nearby places</h1>
+        <div className="tags flex w-full gap-3 mt-3">
+        <span className="bg-gray-200 px-3 py-1 rounded-full text-[15px]">pikule</span>
+        <span className="bg-gray-200 px-3 py-1 rounded-full text-[15px]">pikule</span>
+        <span className="bg-gray-200 px-3 py-1 rounded-full text-[15px]">pikule</span>
+            
+        </div>
+      </section>
 
       {/* Related Posts */}
       <section className="mt-16 pt-8 border-t">
@@ -138,6 +149,8 @@ export default function BlogPost({ params }) {
           ))}
         </div>
       </section>
+
+
     </article>
   );
 }
