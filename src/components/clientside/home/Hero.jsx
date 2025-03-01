@@ -1,142 +1,95 @@
 "use client";
 
-import { Search } from 'lucide-react';
 import { useState, useEffect } from "react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { motion } from "framer-motion";
+import { MapPin, Search, Globe, Plane, Compass } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-export default function Hero() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [nextImageIndex, setNextImageIndex] = useState(1);
-  const [openSuggestions, setOpenSuggestions] = useState(false);
+export default function HeroSection() {
+    const [search, setSearch] = useState("");
+    const [suggestions, setSuggestions] = useState([]);
 
-  // Array of background image URLs
-  const backgroundImages = [
-    "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3",
-    "https://plus.unsplash.com/premium_photo-1661919589683-f11880119fb7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3",
-    "https://images.unsplash.com/photo-1595928607828-6fdaee9c0942?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3",
-    "https://images.unsplash.com/photo-1498307833015-e7b400441eb8?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3",
-    "https://images.unsplash.com/photo-1618805714320-f8825019c1be?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3",
-  ];
+    useEffect(() => {
+        if (search.length > 2) {
+            setSuggestions(
+                ["Paris, France", "New York City, USA", "Tokyo, Japan", "Bali, Indonesia"]
+                    .filter((place) => place.toLowerCase().includes(search.toLowerCase()))
+            );
+        } else {
+            setSuggestions([]);
+        }
+    }, [search]);
 
-  const destinations = [
-    { id: 1, name: "Banaras, India" },
-    { id: 2, name: "Kyoto, Japan" },
-    { id: 3, name: "Santorini, Greece" },
-    { id: 4, name: "Machu Picchu, Peru" },
-    { id: 5, name: "Paris, France" },
-    { id: 6, name: "New York, USA" },
-    { id: 7, name: "Sydney, Australia" },
-  ];
-
-  // Enhanced image transition effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNextImageIndex((currentImageIndex + 1) % backgroundImages.length);
-      setTimeout(() => {
-        setCurrentImageIndex(nextImageIndex);
-      }, 1000); // Delay to sync with animation
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, [currentImageIndex, nextImageIndex]);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    alert(`Searching for: ${searchTerm}`);
-    setOpenSuggestions(false);
-  };
-
-  const filteredDestinations = destinations.filter((destination) =>
-    destination.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  return (
-    <header className="relative h-[600px] flex items-center justify-center text-white overflow-hidden">
-      {/* Background Images with Slide Effect */}
-      <div className="absolute inset-0 z-10">
-        {backgroundImages.map((image, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out
-              ${index === currentImageIndex ? 'opacity-100 translate-x-0' : 
-                index === nextImageIndex ? 'opacity-0 translate-x-full' : 'opacity-0 -translate-x-full'}`}
-          >
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/60 z-20" />
-            
-            {/* Background Image */}
-            <div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat w-full h-full transform scale-105"
-              style={{
-                backgroundImage: `url('${image}')`,
-                animation: index === currentImageIndex ? 'scale 10s infinite alternate' : 'none'
-              }}
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* Content */}
-      <div className="relative z-20 text-center px-4 max-w-3xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">
-          Your Ultimate Travel Guides
-        </h1>
-        <p className="text-xl mb-8 animate-slide-up delay-200">
-          Discover Articles on Amazing Places Around the Globe
-        </p>
-        <form onSubmit={handleSearch} className="animate-slide-up delay-300">
-          <div className="flex max-w-xl mx-auto relative">
-            <Command className="w-full rounded-l-full overflow-visible">
-              <CommandInput
-                placeholder="Search destinations..."
-                value={searchTerm}
-                onValueChange={(value) => {
-                  setSearchTerm(value);
-                  setOpenSuggestions(value.length > 0);
-                }}
-                className="flex-1 px-6 py-3 rounded-l-full font-medium text-foreground"
-                onFocus={() => setOpenSuggestions(searchTerm.length > 0)}
-                onBlur={() => setTimeout(() => setOpenSuggestions(false), 200)}
-              />
-              {openSuggestions && (
-                <CommandList className="absolute top-full mt-3 left-0 w-full bg-background text-foreground rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                  <CommandEmpty>No destinations found.</CommandEmpty>
-                  <CommandGroup>
-                    {filteredDestinations.map((destination) => (
-                      <CommandItem
-                        key={destination.id}
-                        value={destination.name}
-                        onSelect={(selectedValue) => {
-                          setSearchTerm(selectedValue);
-                          setOpenSuggestions(false);
-                          alert(`Selected: ${selectedValue}`);
-                        }}
-                        className="px-4 py-2 hover:bg-accent cursor-pointer"
-                      >
-                        {destination.name}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              )}
-            </Command>
-            <button
-              type="submit"
-              className="bg-primary hover:bg-primary/90 px-6 py-3 rounded-r-full transition-colors"
+    return (
+        <section className="flex flex-col items-center text-center gap-10 px-6 md:px-16 bg-gray-100 mt-16 sm:h-screen">
+            {/* Animated Heading */}
+            <motion.h1 
+                initial={{ opacity: 0, y: -20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.7, ease: "easeOut" }}
+                className="text-4xl md:text-7xl font-bold leading-tight mt-20"
             >
-              <Search className="h-6 w-6" />
-            </button>
-          </div>
-        </form>
-      </div>
-    </header>
-  );
+                Discover <span className="text-green-500">Amazing Places</span> Around the World
+            </motion.h1>
+
+            {/* Animated Subtext with SEO-friendly spans */}
+            <motion.p
+                initial={{ opacity: 0, x: -10 }} 
+                animate={{ opacity: 1, x: 0 }} 
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="sm:text-2xl text-xl"
+            >
+                Explore travel guides hidden gems, and 
+             must-visit places for an 
+             unforgettable adventure.
+            </motion.p>
+
+            {/* Search Bar */}
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }} 
+                animate={{ opacity: 1, scale: 1 }} 
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="relative w-full flex justify-center items-center"
+            >
+                <input
+                    type="text"
+                    placeholder="Search for a place.."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="sm:w-1/2 px-4 w-full border-green-500 border text-gray-900 p-3 outline-none rounded-full shadow-lg"
+                />
+                <Search className="absolute right-10 text-green-600" />
+                {suggestions.length > 0 && (
+                    <ul className="absolute mt-2 w-full bg-white text-gray-900 shadow-lg rounded-lg overflow-hidden">
+                        {suggestions.map((suggestion, index) => (
+                            <li key={index} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                {suggestion}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </motion.div>
+
+            {/* Animated SEO-friendly Spans with Icons */}
+            <motion.div 
+                initial={{ opacity: 0, y: 10 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.5, delay: 0.6 }}
+                className="sm:flex flex-wrap justify-center gap-4 hidden "
+            >
+                <span className="bg-white shadow-lg rounded-full px-4 py-2 flex items-center gap-2">
+                    <MapPin className="text-green-500" /> Search any location here
+                </span>
+                <span className="bg-white shadow-lg rounded-full px-4 py-2 flex items-center gap-2">
+                    <Globe className="text-blue-500" /> Discover the world
+                </span>
+                <span className="bg-white shadow-lg rounded-full px-4 py-2 flex items-center gap-2">
+                    <Plane className="text-red-500" /> Find the best travel deals
+                </span>
+                <span className="bg-white shadow-lg rounded-full px-4 py-2 flex items-center gap-2">
+                    <Compass className="text-yellow-500" /> Explore hidden destinations
+                </span>
+            </motion.div>
+        </section>
+    );
 }
