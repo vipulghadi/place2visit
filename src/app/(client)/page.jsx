@@ -4,8 +4,8 @@ import TopPlacesToVisitNow from "@/components/clientside/home/TopPlacesToVisitNo
 import NewsLetter from "@/components/clientside/home/NewsLetter"
 import NearYou from "@/components/clientside/home/NearYou"
 import ArticleOfTheDay from "@/components/clientside/home/ArticleOfTheDay"
-import Testimonials from "@/components/clientside/home/Testimonials"
-import CountryMover from "@/components/clientside/home/CountryMover"
+import WhyToRead from "@/components/clientside/home/WhyToRead"
+import FAQ from "@/components/clientside/FAQ"
 export default function Home() {
   return (
     <div>
@@ -13,11 +13,11 @@ export default function Home() {
       
       <TopPlacesToVisitNow/>
       <ArticleOfTheDay/>
-     
       <NearYou/>
-      <Testimonials/>
       <NewsLetter/>
-      <CountryMover/>
+      <WhyToRead/>
+      <FAQ/>
+
       
      
     </div>

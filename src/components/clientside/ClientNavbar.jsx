@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
 import { Menu } from "lucide-react"
-
+import SubscribeToUs from "@/components/clientside/SubScribeToUsDialog"
+import ReportErrorDialog from "@/components/clientside/ReportError"
 export default function Component() {
   return (
     <header className="flex h-16  shrink-0 items-center justify-between px-4 md:px-6 border-b fixed top-0 left-0 w-screen z-50 bg-white">
@@ -17,11 +18,8 @@ export default function Component() {
           <Link href="/popular" className="text-sm font-medium transition-colors hover:text-primary" prefetch={false}>
             Popular Places
           </Link>
-          <Button asChild>
-            <Link href="/connect" prefetch={false}>
-              Connect With Us
-            </Link>
-          </Button>
+          <ReportErrorDialog/>
+<SubscribeToUs/>
         </nav>
 
         <Sheet>

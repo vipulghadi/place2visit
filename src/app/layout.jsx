@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
         <meta name="twitter:site" content={metadata.twitter.site} />
         <meta name="twitter:creator" content={metadata.twitter.creator} />
       </head>
-      <body className="w-screen">
+      <body >
         
           {children}
     
