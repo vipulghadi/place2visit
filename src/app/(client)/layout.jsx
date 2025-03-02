@@ -30,7 +30,7 @@ export const metadata = {
 
 const Layout = ({ children }) => {
   return (
-    <main className="w-full relative ">
+    <main className="w-full relative  ">
       <Head>
         {/* Favicon for browser tab */}
         <link rel="icon" href="/favicon.ico" />
@@ -41,8 +41,10 @@ const Layout = ({ children }) => {
       {/* Navbar */}
       <NavbarClient />
 
-      {/* Main Content */}
-      {children}
+    <div className="">
+    {children}
+    </div>
+    
       <Footer/>
     </main>
   );
