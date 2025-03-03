@@ -7,8 +7,10 @@ export async function POST(req) {
     const body = await req.json();
     console.log(body);
 
-    const { place, state, country, longitude, latitude } = body;
+    const { title,place, state, country, longitude, latitude } = body;
+     console.log(title);
 
+     
     if (!place) {
       // If 'place' is not provided, return a 400 error
       return new Response(
@@ -19,17 +21,19 @@ export async function POST(req) {
 
     // Create the prompt using dynamic variables
     const prompt = ArticleGeneratorPrompt(
+      title,
       place,
       country,
       state,
       longitude,
       latitude
     );
+
     console.log("Generated prompt:", prompt);
 
     // Send the prompt to Gemini API
     const response = await GeminiAPIResponse(prompt);
-    console.log("Received response type:", typeof response);
+    console.log(response);
 
     // Ensure the response is a string and attempt to parse it into JSON
     let parsedResponse;

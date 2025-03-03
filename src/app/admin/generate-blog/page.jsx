@@ -17,6 +17,7 @@ import {
 
 export default function BlogEditor() {
   const [query, setQuery] = useState({
+    title: "",
     place: "",
     state: "",
     country: "",
@@ -46,6 +47,7 @@ export default function BlogEditor() {
 
   const handleSelectPlace = (selectedPlace) => {
     setQuery({
+      title:"",
       place: selectedPlace.properties.city || "",
       state: selectedPlace.properties.state || "",
       country: selectedPlace.properties.country || "",
@@ -327,6 +329,15 @@ export default function BlogEditor() {
               value={query.latitude}
               onChange={(e) => setQuery({ ...query, latitude: e.target.value })}
             />
+            <Input
+            placeholder="Enter Title"
+            value={query.title}
+            onChange={(e) => {
+              setQuery({ ...query, title: e.target.value });
+             
+            }}
+            className="w-full"
+          />
           </div>
 
           <div className="flex gap-3">

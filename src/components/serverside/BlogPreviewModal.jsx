@@ -1,7 +1,9 @@
-import { Modal, Button } from "@mantine/core";
 import { useState } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+
 
 export default function ArticleModal({ post }) {
 
@@ -161,56 +163,27 @@ export default function ArticleModal({ post }) {
 
   return (
     <>
-      <Button onClick={() => setOpened(true)}>View Article</Button>
-      <Modal
-        opened={opened}
-        onClose={() => setOpened(false)}
-        size="lg"
-        title={article.title}
-      >
-        <div className="mb-4">
-          {article.cover_image && (
-            <img
-              src={article.cover_image}
-              alt={article.title}
-              width={800}
-              height={400}
-              className="rounded-lg"
-            />
-          )}
-        </div>
-        {article.sections && article.sections.map((section, index) => (
-          <div key={index} className="mb-6">
-            <h2 className="text-xl font-bold mb-2">{section.heading}</h2>
-            <p className="mb-4">{section.text}</p>
-            {section.image && (
-              <img
-                src={section.image}
-                alt={section.heading}
-                width={800}
-                height={400}
-                className="rounded-lg"
-              />
-            )}
-            {section.subsections &&
-              section.subsections.map((sub, subIndex) => (
-                <div key={subIndex} className="mb-4">
-                  <h3 className="text-lg font-semibold">{sub.title}</h3>
-                  <p className="mb-2">{sub.text}</p>
-                  {sub.image && (
-                    <img
-                      src={sub.image}
-                      alt={sub.title}
-                      width={800}
-                      height={400}
-                      className="rounded-lg"
-                    />
-                  )}
-                </div>
-              ))}
-          </div>
-        ))}
-      </Modal>
+      <Button onClick={() => setOpened(true)}>Open Article</Button>
+      <Dialog open={opened} onOpenChange={setOpened}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{article.title}</DialogTitle>
+            <button
+              className="absolute top-2 right-2 p-1 rounded-full bg-gray-100 hover:bg-gray-200"
+              onClick={() => setOpened(false)}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </DialogHeader>
+          <Image
+            src={article.cover_image}
+            alt={article.title}
+            width={500}
+            height={300}
+            className="rounded-lg"
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

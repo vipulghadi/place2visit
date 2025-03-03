@@ -1,8 +1,8 @@
 // app/layout.js
 import "./globals.css"
-import '@mantine/core/styles.css'; // Import Mantine core styles
+
 import React from 'react';
-import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core'; // Import 
+
 export const metadata = {
   title: "My Next.js App",
   description: "Explore the world of Next.js with Tailwind CSS.",
@@ -28,9 +28,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" {...mantineHtmlProps}>
+    <html lang="en" >
       <head>
-        <ColorSchemeScript />
+        
         <link rel="shortcut icon" href="/favicon.svg" />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no" />
         {/* Additional meta tags for SEO and social media sharing */}
@@ -45,7 +45,7 @@ export default function RootLayout({ children }) {
         <meta name="twitter:creator" content={metadata.twitter.creator} />
       </head>
       <body className="w-screen  " >
-        
+    
           {children}
     
       </body>
