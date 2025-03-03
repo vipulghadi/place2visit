@@ -14,7 +14,7 @@ export async function uploadToS3(fileBuffer, fileName, contentType) {
     Key: fileName,
     Body: fileBuffer,
     ContentType: contentType,
-    ACL: "public-read", // Makes the file publicly accessible
+    
   };
 
   const command = new PutObjectCommand(params);

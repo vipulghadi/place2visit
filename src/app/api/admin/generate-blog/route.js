@@ -33,7 +33,7 @@ export async function POST(req) {
 
     // Send the prompt to Gemini API
     const response = await GeminiAPIResponse(prompt);
-    console.log(response);
+    
 
     // Ensure the response is a string and attempt to parse it into JSON
     let parsedResponse;
