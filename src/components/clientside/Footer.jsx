@@ -3,7 +3,7 @@ import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Facebook, Twitter, Instagram, Linkedin, Youtube, Send, Mail, Phone, MapPin } from "lucide-react"
-
+import logo from "../../../public/logo.png"
 export default function Footer() {
   return (
     <footer className="bg-black text-gray-100">
@@ -13,12 +13,11 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <Image src="/placeholder.svg?height=40&width=40" alt="Company Logo" width={40} height={40} />
-              <span className="text-xl font-bold">Company Name</span>
+              <Image src={logo} alt="place2visit  Logo" width={40} height={40} />
+              <span className="text-xl font-bold">Place2Visit</span>
             </div>
             <p className="text-gray-400 max-w-xs">
-              We provide exceptional services and products to make your life better. Join us on our journey to
-              excellence.
+            We curate exceptional travel articles on diverse destinations, ensuring your journeys are seamless, enjoyable, and filled with excellence.
             </p>
             <div className="flex space-x-4 pt-2">
               <Link href="#" className="hover:text-primary transition-colors">
@@ -54,17 +53,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-gray-400 hover:text-primary transition-colors">
+                <Link href="/about-us" className="text-gray-400 hover:text-primary transition-colors">
                   About Us
                 </Link>
               </li>
+
               <li>
-                <Link href="/services" className="text-gray-400 hover:text-primary transition-colors">
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-gray-400 hover:text-primary transition-colors">
+                <Link href="/" className="text-gray-400 hover:text-primary transition-colors">
                   Blog
                 </Link>
               </li>
@@ -82,15 +77,15 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start space-x-3">
                 <MapPin size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-400">123 Street Name, City, Country</span>
+                <span className="text-gray-400">Jabalpur, JEC  Hostel</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone size={18} className="text-gray-400 flex-shrink-0" />
-                <span className="text-gray-400">+1 (123) 456-7890</span>
+                <span className="text-gray-400">+91 8275167036</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail size={18} className="text-gray-400 flex-shrink-0" />
-                <span className="text-gray-400">info@example.com</span>
+                <span className="text-gray-400">vipulvijayghadi@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -112,15 +107,15 @@ export default function Footer() {
       {/* Bottom Footer */}
       <div className="border-t border-gray-800">
         <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">© {new Date().getFullYear()} Company Name. All rights reserved.</p>
+          <p className="text-gray-400 text-sm">© {new Date().getFullYear()} Place2Visit. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="text-gray-400 hover:text-primary text-sm transition-colors">
+            <Link href="/privacy-policy" className="text-gray-400 hover:text-primary text-sm transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-gray-400 hover:text-primary text-sm transition-colors">
+            <Link href="/terms-conditions" className="text-gray-400 hover:text-primary text-sm transition-colors">
               Terms of Service
             </Link>
-            <Link href="/cookies" className="text-gray-400 hover:text-primary text-sm transition-colors">
+            <Link href="/cookies-policy" className="text-gray-400 hover:text-primary text-sm transition-colors">
               Cookie Policy
             </Link>
           </div>

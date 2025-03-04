@@ -79,7 +79,7 @@ export default function ArticleGeneratorPrompt(
   - The response must be a valid JSON with no extra syntax or formatting issues.
   - The meta_title should exactly match "${title}", or generate an SEO-friendly alternative if missing.
   - The article should be engaging, informative, and tourist-friendly.
-  - Cover at least 5 attractions, but no more than 15.
+  - Cover at least 10 attractions, but no more than 30.
   - Include cultural highlights, local food, travel tips, and seasonal recommendations.
   - Ensure word count is between 1000-1500 words.
   - Do not include unnecessary punctuation or formatting that prevents valid JSON conversion.
