@@ -13,7 +13,9 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
+import searchImages from "@/lib/google_image_search"; // Adjust path
 
 export default function BlogEditor() {
   const [query, setQuery] = useState({
@@ -25,12 +27,18 @@ export default function BlogEditor() {
     longitude: "",
   });
 
-  const [articleData, setArticleData] = useState(null); // Initially null
+  const [articleData, setArticleData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [isArticleGenerated, setIsArticleGenerated] = useState(false);
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [imageLinks, setImageLinks] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(null);
+  const [currentSubsectionIndex, setCurrentSubsectionIndex] = useState(null);
+  const [error,setError]=useState(null)
 
   const fetchPlace = async (place) => {
     if (!place) return;
@@ -41,13 +49,13 @@ export default function BlogEditor() {
       const data = await response.json();
       setSuggestions(data.features || []);
     } catch (error) {
-      console.error("Error fetching place suggestions:", error);
+      console.log("Error fetching place suggestions:", error);
     }
   };
 
   const handleSelectPlace = (selectedPlace) => {
     setQuery({
-      title:"",
+      title: "",
       place: selectedPlace.properties.city || "",
       state: selectedPlace.properties.state || "",
       country: selectedPlace.properties.country || "",
@@ -69,7 +77,7 @@ export default function BlogEditor() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(articleData), // Send full articleData
+        body: JSON.stringify(articleData),
       });
       if (response.ok) {
         toast.success("Blog created successfully");
@@ -78,7 +86,7 @@ export default function BlogEditor() {
       }
     } catch (error) {
       toast.error("Error in saving blog");
-      console.error("Error saving blog:", error);
+      
     } finally {
       setLoading(false);
     }
@@ -99,16 +107,17 @@ export default function BlogEditor() {
       });
 
       if (!response.ok) {
-        throw new Error("Error generating article");
+        toast.error("Error generating article");
+        return
       }
 
       const data = await response.json();
-      setArticleData(data.data); // Set the full data object
+      setArticleData(data.data);
       console.log("Generated article:", data.data);
       toast.success("Article generated successfully!");
       setIsArticleGenerated(true);
     } catch (error) {
-      console.error(error);
+      
       toast.error("Error in generating article");
     } finally {
       setLoading(false);
@@ -137,7 +146,7 @@ export default function BlogEditor() {
     const newSection = {
       heading: "New Section",
       text: "",
-      images: [], // Initialize as array
+      images: [],
       subsections: [],
     };
     setArticleData({
@@ -150,9 +159,7 @@ export default function BlogEditor() {
   };
 
   const removeSection = (index) => {
-    const updatedSections = articleData.article.sections.filter(
-      (_, i) => i !== index
-    );
+    const updatedSections = articleData.article.sections.filter((_, i) => i !== index);
     setArticleData({
       ...articleData,
       article: { ...articleData.article, sections: updatedSections },
@@ -171,9 +178,9 @@ export default function BlogEditor() {
 
   const removeSubsection = (sectionIndex, subIndex) => {
     const updatedSections = [...articleData.article.sections];
-    updatedSections[sectionIndex].subsections = updatedSections[
-      sectionIndex
-    ].subsections.filter((_, i) => i !== subIndex);
+    updatedSections[sectionIndex].subsections = updatedSections[sectionIndex].subsections.filter(
+      (_, i) => i !== subIndex
+    );
     setArticleData({
       ...articleData,
       article: { ...articleData.article, sections: updatedSections },
@@ -198,9 +205,7 @@ export default function BlogEditor() {
   };
 
   const removeCoverImage = (index) => {
-    const updatedCoverImages = articleData.article.cover_images.filter(
-      (_, i) => i !== index
-    );
+    const updatedCoverImages = articleData.article.cover_images.filter((_, i) => i !== index);
     setArticleData({
       ...articleData,
       article: { ...articleData.article, cover_images: updatedCoverImages },
@@ -230,9 +235,9 @@ export default function BlogEditor() {
 
   const removeSectionImage = (sectionIndex, imageIndex) => {
     const updatedSections = [...articleData.article.sections];
-    updatedSections[sectionIndex].images = updatedSections[
-      sectionIndex
-    ].images.filter((_, i) => i !== imageIndex);
+    updatedSections[sectionIndex].images = updatedSections[sectionIndex].images.filter(
+      (_, i) => i !== imageIndex
+    );
     setArticleData({
       ...articleData,
       article: { ...articleData.article, sections: updatedSections },
@@ -253,8 +258,7 @@ export default function BlogEditor() {
 
   const updateSubsectionImage = (sectionIndex, subIndex, imageIndex, value) => {
     const updatedSections = [...articleData.article.sections];
-    updatedSections[sectionIndex].subsections[subIndex].images[imageIndex] =
-      value;
+    updatedSections[sectionIndex].subsections[subIndex].images[imageIndex] = value;
     setArticleData({
       ...articleData,
       article: { ...articleData.article, sections: updatedSections },
@@ -263,14 +267,63 @@ export default function BlogEditor() {
 
   const removeSubsectionImage = (sectionIndex, subIndex, imageIndex) => {
     const updatedSections = [...articleData.article.sections];
-    updatedSections[sectionIndex].subsections[subIndex].images =
-      updatedSections[sectionIndex].subsections[subIndex].images.filter(
-        (_, i) => i !== imageIndex
-      );
+    updatedSections[sectionIndex].subsections[subIndex].images = updatedSections[
+      sectionIndex
+    ].subsections[subIndex].images.filter((_, i) => i !== imageIndex);
     setArticleData({
       ...articleData,
       article: { ...articleData.article, sections: updatedSections },
     });
+  };
+
+  // Handle image search for sections and subsections
+  const handleImageSearch = async (searchQuery, sectionIndex, subIndex = null) => {
+    setLoading(true);
+    setError(null);
+    setCurrentSectionIndex(sectionIndex);
+    setCurrentSubsectionIndex(subIndex);
+
+    const updatedSearchQuery=`${searchQuery} in ${query.place} ${query.state}`
+
+    try {
+      const links = await searchImages(updatedSearchQuery, 15); // Fetch up to 10 images
+      setImageLinks(links);
+      setSelectedImages([]);
+      setImageDialogOpen(true);
+    } catch (err) {
+      setError(err.message);
+      setImageLinks([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImageSelect = (link) => {
+    setSelectedImages((prev) =>
+      prev.includes(link) ? prev.filter((img) => img !== link) : [...prev, link]
+    );
+  };
+
+  const handleImageConfirm = () => {
+    const updatedSections = [...articleData.article.sections];
+    if (currentSubsectionIndex !== null) {
+      // Subsection images
+      updatedSections[currentSectionIndex].subsections[currentSubsectionIndex].images = [
+        ...updatedSections[currentSectionIndex].subsections[currentSubsectionIndex].images,
+        ...selectedImages,
+      ];
+    } else {
+      // Section images
+      updatedSections[currentSectionIndex].images = [
+        ...(updatedSections[currentSectionIndex].images || []),
+        ...selectedImages,
+      ];
+    }
+    setArticleData({
+      ...articleData,
+      article: { ...articleData.article, sections: updatedSections },
+    });
+    setImageDialogOpen(false);
   };
 
   return (
@@ -302,8 +355,7 @@ export default function BlogEditor() {
                       className="p-2 hover:bg-accent cursor-pointer"
                       onClick={() => handleSelectPlace(suggestion)}
                     >
-                      {suggestion.properties.city}, {suggestion.properties.state}
-                      , {suggestion.properties.country}
+                      {suggestion.properties.city}, {suggestion.properties.state}, {suggestion.properties.country}
                     </div>
                   ))}
                 </div>
@@ -330,14 +382,11 @@ export default function BlogEditor() {
               onChange={(e) => setQuery({ ...query, latitude: e.target.value })}
             />
             <Input
-            placeholder="Enter Title"
-            value={query.title}
-            onChange={(e) => {
-              setQuery({ ...query, title: e.target.value });
-             
-            }}
-            className="w-full"
-          />
+              placeholder="Enter Title"
+              value={query.title}
+              onChange={(e) => setQuery({ ...query, title: e.target.value })}
+              className="w-full"
+            />
           </div>
 
           <div className="flex gap-3">
@@ -464,6 +513,13 @@ export default function BlogEditor() {
                     >
                       <ImagePlus className="h-4 w-4 mr-2" /> Add Section Image
                     </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => handleImageSearch(section.heading, secIndex)}
+                      className="ml-2"
+                    >
+                      <ImagePlus className="h-4 w-4 mr-2" /> Search Images
+                    </Button>
                   </div>
 
                   {/* Subsections */}
@@ -511,10 +567,7 @@ export default function BlogEditor() {
                           {/* Subsection Images */}
                           <div className="space-y-2">
                             {sub.images.map((image, imgIndex) => (
-                              <div
-                                key={imgIndex}
-                                className="flex gap-2 items-center"
-                              >
+                              <div key={imgIndex} className="flex gap-2 items-center">
                                 <Input
                                   placeholder="Subsection Image URL"
                                   value={image}
@@ -541,11 +594,7 @@ export default function BlogEditor() {
                                   variant="destructive"
                                   size="icon"
                                   onClick={() =>
-                                    removeSubsectionImage(
-                                      secIndex,
-                                      subIndex,
-                                      imgIndex
-                                    )
+                                    removeSubsectionImage(secIndex, subIndex, imgIndex)
                                   }
                                 >
                                   <Trash className="h-4 w-4" />
@@ -557,6 +606,13 @@ export default function BlogEditor() {
                               onClick={() => addSubsectionImage(secIndex, subIndex)}
                             >
                               <ImagePlus className="h-4 w-4 mr-2" /> Add Subsection Image
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => handleImageSearch(sub.title, secIndex, subIndex)}
+                              className="ml-2"
+                            >
+                              <ImagePlus className="h-4 w-4 mr-2" /> Search Images
                             </Button>
                           </div>
                         </CardContent>
@@ -582,22 +638,67 @@ export default function BlogEditor() {
         </Card>
       )}
 
+      {/* Preview Modal */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Image Preview</DialogTitle>
           </DialogHeader>
           {previewImage ? (
-            <img
-              src={previewImage}
-              alt="Preview"
-              className="w-full h-auto rounded-md"
-            />
+            <img src={previewImage} alt="Preview" className="w-full h-auto rounded-md" />
           ) : (
             <div className="flex items-center justify-center h-48 bg-accent rounded-md">
               <ImagePlus className="h-8 w-8 text-muted-foreground" />
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Image Search Dialog */}
+      <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>
+              Search Results for "{currentSubsectionIndex !== null ? articleData?.article.sections[currentSectionIndex]?.subsections[currentSubsectionIndex]?.title : articleData?.article.sections[currentSectionIndex]?.heading}"
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-4 max-h-96 overflow-y-auto">
+            {error && <p className="text-red-600 mb-4">{error}</p>}
+            {imageLinks.length > 0 ? (
+              <ul className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {imageLinks.map((link, index) => (
+                  <li key={index} className="flex flex-col items-center">
+                    <img
+                      src={link}
+                      alt={`Result ${index + 1}`}
+                      className={`w-32 h-32 object-cover rounded cursor-pointer transition-all ${
+                        selectedImages.includes(link) ? "border-4 border-blue-500" : "border border-gray-300"
+                      }`}
+                      onClick={() => handleImageSelect(link)}
+                    />
+                    <a
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 text-blue-600 hover:underline text-sm"
+                    >
+                      Image {index + 1}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>{loading ? "Searching..." : "No images available."}</p>
+            )}
+          </div>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setImageDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleImageConfirm} disabled={selectedImages.length === 0}>
+              Add Selected ({selectedImages.length})
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
