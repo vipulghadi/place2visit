@@ -12,12 +12,15 @@ import {
 } from "@/components/ui/carousel";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Navigation, Heart } from "lucide-react";
+import { MapPin, Navigation, Heart, Locate } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 function NearYou() {
   const [places, setPlaces] = useState([]);
-    
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState(null);
+
   useEffect(() => {
     // Simulate fetching top places (replace with real API call)
     const fetchPlaces = async () => {
@@ -28,7 +31,7 @@ function NearYou() {
           slug: "top-10-unmissable-places-in-pune",
           description: "Discover historical forts and vibrant culture.",
           distance: "2.5 km",
-          rating: 4.7
+          rating: 4.7,
         },
         {
           name: "Paris, France",
@@ -36,7 +39,7 @@ function NearYou() {
           slug: "best-attractions-in-paris",
           description: "Romantic streets and iconic landmarks.",
           distance: "8,500 km",
-          rating: 4.9
+          rating: 4.9,
         },
         {
           name: "Tokyo, Japan",
@@ -44,7 +47,7 @@ function NearYou() {
           slug: "ultimate-tokyo-travel-guide",
           description: "A blend of tradition and futuristic vibes.",
           distance: "7,800 km",
-          rating: 4.8
+          rating: 4.8,
         },
         {
           name: "New York, USA",
@@ -52,7 +55,7 @@ function NearYou() {
           slug: "top-new-york-attractions",
           description: "The city that never sleeps has it all.",
           distance: "12,000 km",
-          rating: 4.6
+          rating: 4.6,
         },
         {
           name: "Bali, Indonesia",
@@ -60,7 +63,7 @@ function NearYou() {
           slug: "ultimate-bali-travel-guide",
           description: "Paradise beaches and spiritual retreats.",
           distance: "6,200 km",
-          rating: 4.9
+          rating: 4.9,
         },
       ];
       setPlaces(dummyData);
@@ -68,8 +71,41 @@ function NearYou() {
     fetchPlaces();
   }, []);
 
+  // Function to get user's location
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      setLocationLoading(true);
+      setLocationError(null);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log(`User Location - Latitude: ${latitude}, Longitude: ${longitude}`);
+          setLocationLoading(false);
+          // Optionally, update places with real distances here if you have lat/lng data
+        },
+        (error) => {
+          setLocationError("Unable to retrieve location. Please allow location access.");
+          setLocationLoading(false);
+          console.error("Geolocation error:", error);
+        }
+      );
+    } else {
+      setLocationError("Geolocation is not supported by your browser.");
+    }
+  };
+
+  // Animation variants for the button
+  const buttonVariants = {
+    hover: { scale: 1.05, transition: { duration: 0.2 } },
+    tap: { scale: 0.95 },
+    loading: {
+      rotate: [0, 360],
+      transition: { duration: 1, repeat: Infinity, ease: "linear" },
+    },
+  };
+
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
@@ -87,18 +123,36 @@ function NearYou() {
               Discover amazing destinations within your reach and plan your next adventure today.
             </p>
           </div>
-          <Link href="/all-destinations" className="mt-4 md:mt-0 text-emerald-600 font-medium hover:text-emerald-700 transition-colors">
-            View all destinations →
-          </Link>
+          <div className="flex items-center gap-4 mt-4 md:mt-0">
+            <motion.div
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+              animate={locationLoading ? "loading" : ""}
+            >
+              <Button
+                onClick={getUserLocation}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-4 py-2 flex items-center"
+                disabled={locationLoading}
+              >
+                <Locate className="h-4 w-4 mr-2" />
+                {locationLoading ? "Locating..." : "Find My Location"}
+              </Button>
+            </motion.div>
+            <Link href="/all-near-by-destinations" className="text-emerald-600 font-medium hover:text-emerald-700 transition-colors">
+              View all destinations →
+            </Link>
+          </div>
         </div>
-        
+
+        {locationError && (
+          <p className="text-red-600 text-sm mb-4">{locationError}</p>
+        )}
+
         <Carousel className="w-full">
           <CarouselContent className="-ml-4">
             {places.map((place, index) => (
-              <CarouselItem
-                key={index}
-                className="pl-4 md:basis-1/2 lg:basis-1/3"
-              >
+              <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -117,7 +171,6 @@ function NearYou() {
                             className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-                          
                           <div className="absolute top-4 right-4 flex space-x-2">
                             <span className="bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-medium px-2.5 py-1 rounded-full flex items-center">
                               <Navigation className="h-3 w-3 mr-1 text-emerald-600" />
@@ -127,7 +180,6 @@ function NearYou() {
                               ★ {place.rating}
                             </span>
                           </div>
-                          
                           <div className="absolute bottom-0 left-0 p-5 w-full">
                             <div className="flex items-center mb-2">
                               <MapPin size={16} className="text-emerald-400 mr-1.5" />

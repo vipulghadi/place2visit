@@ -3,22 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Clock, User } from 'lucide-react';
+import { ArrowRight, BookOpen, Clock, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function TopPlacesToVisitNow() {
   const [places, setPlaces] = useState([]);
-  const [activeTab, setActiveTab] = useState("all");
 
   useEffect(() => {
     // Simulate fetching top places (replace with real API call)
@@ -32,7 +23,7 @@ export default function TopPlacesToVisitNow() {
           category: "history",
           readTime: "8 min",
           author: "Priya Sharma",
-          date: "May 15, 2024"
+          date: "May 15, 2024",
         },
         {
           name: "Paris After Dark: A Night Tour Guide",
@@ -42,7 +33,7 @@ export default function TopPlacesToVisitNow() {
           category: "nightlife",
           readTime: "6 min",
           author: "Jean Dupont",
-          date: "April 28, 2024"
+          date: "April 28, 2024",
         },
         {
           name: "Tokyo's Hidden Food Alleys: Local Favorites",
@@ -52,7 +43,7 @@ export default function TopPlacesToVisitNow() {
           category: "food",
           readTime: "10 min",
           author: "Hiro Tanaka",
-          date: "May 3, 2024"
+          date: "May 3, 2024",
         },
         {
           name: "New York on a Budget: Free Attractions Guide",
@@ -62,7 +53,7 @@ export default function TopPlacesToVisitNow() {
           category: "budget",
           readTime: "7 min",
           author: "Sarah Johnson",
-          date: "May 10, 2024"
+          date: "May 10, 2024",
         },
         {
           name: "Bali's Sacred Temples: A Spiritual Journey",
@@ -72,7 +63,7 @@ export default function TopPlacesToVisitNow() {
           category: "culture",
           readTime: "9 min",
           author: "Made Wijaya",
-          date: "April 22, 2024"
+          date: "April 22, 2024",
         },
       ];
       setPlaces(dummyData);
@@ -80,27 +71,23 @@ export default function TopPlacesToVisitNow() {
     fetchPlaces();
   }, []);
 
-  const filteredPlaces = activeTab === "all" 
-    ? places 
-    : places.filter(place => place.category === activeTab);
-
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const item = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
@@ -118,59 +105,17 @@ export default function TopPlacesToVisitNow() {
               Discover our most popular travel guides and insider tips from around the world.
             </p>
           </div>
-          <Link href="/all-articles" className="mt-4 md:mt-0 text-blue-600 font-medium hover:text-blue-700 transition-colors">
-            View all articles →
-          </Link>
+         
         </div>
 
-        <Tabs defaultValue="all" className="mb-8">
-          <TabsList className="bg-gray-100 p-1 rounded-full">
-            <TabsTrigger 
-              value="all" 
-              className="rounded-full data-[state=active]:bg-white data-[state=active]:text-blue-700"
-              onClick={() => setActiveTab("all")}
-            >
-              All
-            </TabsTrigger>
-            <TabsTrigger 
-              value="food" 
-              className="rounded-full data-[state=active]:bg-white data-[state=active]:text-blue-700"
-              onClick={() => setActiveTab("food")}
-            >
-              Food
-            </TabsTrigger>
-            <TabsTrigger 
-              value="culture" 
-              className="rounded-full data-[state=active]:bg-white data-[state=active]:text-blue-700"
-              onClick={() => setActiveTab("culture")}
-            >
-              Culture
-            </TabsTrigger>
-            <TabsTrigger 
-              value="history" 
-              className="rounded-full data-[state=active]:bg-white data-[state=active]:text-blue-700"
-              onClick={() => setActiveTab("history")}
-            >
-              History
-            </TabsTrigger>
-            <TabsTrigger 
-              value="nightlife" 
-              className="rounded-full data-[state=active]:bg-white data-[state=active]:text-blue-700"
-              onClick={() => setActiveTab("nightlife")}
-            >
-              Nightlife
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-        
-        <motion.div 
+        <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {filteredPlaces.map((place, index) => (
+          {places.map((place, index) => (
             <motion.div key={index} variants={item}>
               <Link href={`/blogs/${place.slug}`}>
                 <Card className="overflow-hidden border border-gray-200 hover:shadow-lg transition-all duration-300 h-full group">
@@ -185,7 +130,7 @@ export default function TopPlacesToVisitNow() {
                       />
                       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
-                    
+
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-3">
                         <Badge variant="outline" className="text-xs font-medium text-blue-700 bg-blue-50 border-blue-100 capitalize">
@@ -196,19 +141,19 @@ export default function TopPlacesToVisitNow() {
                           {place.readTime}
                         </div>
                       </div>
-                      
+
                       <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-700 transition-colors">
                         {place.name}
                       </h3>
-                      
+
                       <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                         {place.description}
                       </p>
-                      
+
                       <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
                         <div className="flex items-center">
-                          <User size={14} className="text-gray-400 mr-1.5" />
-                          <span className="text-xs text-gray-500">{place.author}</span>
+                          
+                         
                         </div>
                         <span className="text-xs text-gray-500">{place.date}</span>
                       </div>
@@ -219,19 +164,8 @@ export default function TopPlacesToVisitNow() {
             </motion.div>
           ))}
         </motion.div>
-        
-        <div className="flex justify-center mt-10">
-          <Link href="/all-articles">
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-full flex items-center transition-colors"
-            >
-              Browse All Articles
-              <ArrowRight size={16} className="ml-2" />
-            </motion.button>
-          </Link>
-        </div>
+
+
       </div>
     </motion.div>
   );

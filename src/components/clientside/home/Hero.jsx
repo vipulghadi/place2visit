@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Search, Globe, Plane, Compass, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import PlaceSearchBar from "../PlaceSeachBar";
 import { cn } from "@/lib/utils";
 
 export default function HeroSection() {
@@ -12,6 +13,10 @@ export default function HeroSection() {
     const [suggestions, setSuggestions] = useState([]);
     const [backgroundIndex, setBackgroundIndex] = useState(0);
     
+
+    function handleSearch (){
+
+    }
     const backgroundImages = [
         "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?q=80&w=1530&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         "https://images.unsplash.com/photo-1592639296346-560c37a0f711?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -93,45 +98,7 @@ export default function HeroSection() {
                 </motion.p>
 
                 {/* Search Bar */}
-                <motion.div 
-                    initial={{ opacity: 0, scale: 0.9 }} 
-                    animate={{ opacity: 1, scale: 1 }} 
-                    transition={{ duration: 0.5, delay: 0.6 }}
-                    className="relative w-full max-w-2xl flex justify-center items-center mb-8"
-                >
-                    <div className="relative w-full">
-                        <input
-                            type="text"
-                            placeholder="Where would you like to go?"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="w-full px-6 py-4 pr-12 text-gray-900 bg-white/95 backdrop-blur-sm outline-none rounded-full shadow-xl border-2 border-emerald-500/50 focus:border-emerald-500 transition-all duration-300"
-                        />
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-emerald-500 text-white p-2 rounded-full">
-                            <Search className="h-5 w-5" />
-                        </div>
-                    </div>
-                    
-                    {suggestions.length > 0 && (
-                        <motion.ul 
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="absolute top-full mt-2 w-full bg-white text-left text-gray-900 shadow-xl rounded-xl overflow-hidden z-50"
-                        >
-                            {suggestions.map((suggestion, index) => (
-                                <li 
-                                    key={index} 
-                                    className="px-6 py-3 hover:bg-emerald-50 cursor-pointer flex items-center border-b border-gray-100 last:border-none transition-colors duration-200"
-                                    onClick={() => setSearch(suggestion)}
-                                >
-                                    <MapPin className="text-emerald-500 mr-2 h-4 w-4" />
-                                    {suggestion}
-                                </li>
-                            ))}
-                        </motion.ul>
-                    )}
-                </motion.div>
+                <PlaceSearchBar onSearch={handleSearch} />
 
                 {/* Animated Feature Tags */}
                 <motion.div 
