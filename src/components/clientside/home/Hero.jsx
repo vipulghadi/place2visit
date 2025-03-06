@@ -100,35 +100,34 @@ export default function HeroSection() {
                 {/* Search Bar */}
                 <PlaceSearchBar onSearch={handleSearch} />
 
-                {/* Animated Feature Tags */}
                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }} 
-                    animate={{ opacity: 1, y: 0 }} 
-                    transition={{ duration: 0.7, delay: 0.8 }}
-                    className="flex flex-wrap justify-center gap-3 max-w-3xl"
-                >
-                    {[
-                        { icon: <MapPin className="text-emerald-400" />, text: "Search any location", color: "from-emerald-500/20 to-emerald-500/10" },
-                        { icon: <Globe className="text-blue-400" />, text: "Discover the world", color: "from-blue-500/20 to-blue-500/10" },
-                        { icon: <Plane className="text-purple-400" />, text: "Find travel deals", color: "from-purple-500/20 to-purple-500/10" },
-                        { icon: <Compass className="text-amber-400" />, text: "Hidden destinations", color: "from-amber-500/20 to-amber-500/10" }
-                    ].map((item, index) => (
-                        <motion.span 
-                            key={index}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
-                            className={cn(
-                                "bg-gradient-to-r backdrop-blur-md rounded-full px-4 py-2.5 flex items-center gap-2",
-                                "border border-white/20 shadow-lg text-white",
-                                item.color
-                            )}
-                        >
-                            {item.icon} {item.text}
-                        </motion.span>
-                    ))}
-                </motion.div>
-                
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.7, delay: 0.8 }}
+                className="flex flex-wrap justify-center gap-3 max-w-3xl"
+            >
+                {[
+                    { icon: <MapPin className="text-emerald-400" />, text: "Explore top destinations", color: "from-emerald-500/20 to-emerald-500/10" },
+                    { icon: <Globe className="text-blue-400" />, text: "Read curated travel guides", color: "from-blue-500/20 to-blue-500/10" },
+                    { icon: <Plane className="text-purple-400" />, text: "Plan your perfect trip", color: "from-purple-500/20 to-purple-500/10" },
+                    { icon: <Compass className="text-amber-400" />, text: "Uncover hidden gems", color: "from-amber-500/20 to-amber-500/10" }
+                ].map((item, index) => (
+                    <motion.span 
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
+                        className={cn(
+                            "bg-gradient-to-r backdrop-blur-md rounded-full px-4 py-2.5 flex items-center gap-2",
+                            "border border-white/20 shadow-lg text-white",
+                            item.color
+                        )}
+                    >
+                        {item.icon} {item.text}
+                    </motion.span>
+                ))}
+            </motion.div>
+            
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
