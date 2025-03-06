@@ -2,6 +2,7 @@ const ENV = process.env.APP_ENV || "local"; // Default to "development"
 
 const CONFIG = {
   dev: {
+    
     BASE_URL: "http://localhost:3000",
   },
   local: {
