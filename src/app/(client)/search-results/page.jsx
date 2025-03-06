@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import PlaceSearchBar from "@/components/clientside/PlaceSearchBar";
@@ -23,10 +23,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <button
           key={page}
           onClick={() => onPageChange(page)}
-          className={`w-10 h-10 rounded-lg  cursor-pointer ${
-            currentPage === page
-              ? "bg-blue-500 text-white"
-              : "hover:bg-gray-100"
+          className={`w-10 h-10 rounded-lg cursor-pointer ${
+            currentPage === page ? "bg-blue-500 text-white" : "hover:bg-gray-100"
           }`}
         >
           {page}
@@ -44,8 +42,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   );
 };
 
-// Main SearchResults Component
-function SearchResults() {
+// SearchResults with Suspense
+function SearchResultsContent() {
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,15 +59,15 @@ function SearchResults() {
     setError(null);
     try {
       const response = await fetch(
-        `${BASE_URL}/api/client/search-results?query=${encodeURIComponent(
-          query
-        )}&type=${encodeURIComponent(type)}&page=${page}&limit=${placesPerPage}`
+        `${BASE_URL}/api/client/search-results?query=${encodeURIComponent(query)}&type=${encodeURIComponent(
+          type
+        )}&page=${page}&limit=${placesPerPage}`
       );
       const data = await response.json();
 
       if (response.ok && data.success) {
         setPlaces(data.data || []);
-        setTotalPages(data.pagination.totalPages || 1); // Assuming API returns totalPages
+        setTotalPages(data.pagination.totalPages || 1);
       } else {
         setPlaces([]);
         setError(data.message || "Failed to fetch places");
@@ -107,9 +105,7 @@ function SearchResults() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {searchQuery ? `Search Results for "${searchQuery}"` : "All Destinations"}
           </h1>
-          <p className="text-gray-600">
-            {loading ? "Loading..." : error ? error : `${places.length} results found`}
-          </p>
+          <p className="text-gray-600">{loading ? "Loading..." : error ? error : `${places.length} results found`}</p>
         </div>
 
         {loading ? (
@@ -132,4 +128,11 @@ function SearchResults() {
   );
 }
 
-export default SearchResults;
+// Wrap SearchResultsContent in Suspense
+export default function SearchResults() {
+  return (
+    <Suspense fallback={<div className="text-center py-10">Loading search results...</div>}>
+      <SearchResultsContent />
+    </Suspense>
+  );
+}
