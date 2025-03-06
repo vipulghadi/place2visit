@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Share2, Bookmark, ArrowRight, Heart } from "lucide-react";
 import Link from "next/link";
-
+import { BASE_URL } from "@/lib/constant";
 function ArticleOfTheDay() {
   const [article, setArticle] = useState(null);
 
   useEffect(() => {
     async function fetchArticle() {
       try {
-        const response = await fetch("http://localhost:3000/api/client/article-of-the-day");
+        const response = await fetch(`${BASE_URL}/api/client/article-of-the-day`);
         const result = await response.json();
         if (result.success) {
           setArticle(result.data);
