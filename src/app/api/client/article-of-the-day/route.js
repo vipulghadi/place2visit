@@ -11,7 +11,7 @@ export async function GET() {
       .sort({ createdAt: -1 }) // Sort by newest
       .populate("country", "name")
       .populate("state", "name")
-      .populate("place", "name")
+      .populate("place", "name");
 
     if (!blog) {
       return NextResponse.json(
@@ -20,19 +20,21 @@ export async function GET() {
       );
     }
 
-    // ✅ Format response
+    // ✅ Defensive checks before accessing nested properties
+    const articleData = blog.article || {};
+
     const article = {
-      cover_image: blog.article.cover_images || [],
-      meta_title:blog.meta_title,
-      meta_description:blog.meta_description,
-      createdAt:blog.createdAt,
-      title: blog.article.title,
+      cover_image: articleData.cover_images || [],
+      meta_title: blog.meta_title || "No title",
+      meta_description: blog.meta_description || "No description",
+      createdAt: blog.createdAt,
+      title: articleData.title || "Untitled",
       place_name: blog.place?.name || "Unknown",
       state_name: blog.state?.name || "Unknown",
       country_name: blog.country?.name || "Unknown",
-      first_section: blog.article.sections?.[0]?.text || "No content available",
-      tags:blog.tags,
-      slug:blog.slug
+      first_section: articleData.sections?.[0]?.text || "No content available",
+      tags: blog.tags || [],
+      slug: blog.slug || "",
     };
 
     return NextResponse.json(

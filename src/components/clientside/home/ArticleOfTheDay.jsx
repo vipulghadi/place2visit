@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Share2, Bookmark, ArrowRight, Heart } from "lucide-react";
 import Link from "next/link";
 import { BASE_URL } from "@/lib/constant";
+import { DEFAULT_BLOG_IMAGE } from "@/lib/constant";
 function ArticleOfTheDay() {
   const [article, setArticle] = useState(null);
 
@@ -51,7 +52,7 @@ function ArticleOfTheDay() {
           <Card className="overflow-hidden border-none shadow-xl flex flex-col md:flex-row">
             <div className="relative w-full h-64 sm:h-72 md:h-[400px] md:w-1/2 overflow-hidden group">
               <Image
-                src={article.cover_image[0] || "/fallback-image.jpg"}
+                src={article.cover_image[0] || DEFAULT_BLOG_IMAGE}
                 alt={article.title}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
