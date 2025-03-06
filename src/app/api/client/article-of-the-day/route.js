@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/dbConnect";
 import Blog from "@/models/blog";
-
+import Country from "@/models/country";
+import Place from "@/models/place";
+import State from "@/models/state";
 export async function GET() {
   try {
+
     await connectDB();
 
-    // ✅ Fetch the latest created article and populate place details
+    
     const blog = await Blog.findOne()
       .sort({ createdAt: -1 }) // Sort by newest
       .populate("country", "name")
