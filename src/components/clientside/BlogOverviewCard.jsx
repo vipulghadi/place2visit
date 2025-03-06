@@ -45,7 +45,7 @@ function BlogOverviewCard({ place }) {
               </p>
               <div className="flex flex-wrap gap-2">
               {place.tags.slice(0, 5).map((tag, index) => (
-                <Badge key={index} className="text-xs font-medium text-gray-700 bg-gray-100 capitalize">
+                <Badge key={index} className="text-xs font-medium hover:bg-red-50 bg-gray-100 text-black capitalize">
                   {tag}
                 </Badge>
               ))}

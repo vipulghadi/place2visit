@@ -9,7 +9,7 @@ import { ArrowRight, BookOpen, Clock, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import BlogOverviewCard from "../BlogOverviewCard";
 import { BASE_URL } from "@/lib/constant";
-
+import { DEFAULT_TRAVEL_ARTICLES } from "@/lib/constant";
 
 export default function TopPlacesToVisitNow() {
   const [places, setPlaces] = useState([]);
@@ -24,8 +24,7 @@ export default function TopPlacesToVisitNow() {
             setPlaces(data.data);
         }
         catch(error){
-            console.error(error);
-            toast.error("Error in fetching")
+            setPlaces(DEFAULT_TRAVEL_ARTICLES)
         }
 
 

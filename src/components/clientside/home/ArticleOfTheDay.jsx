@@ -10,6 +10,7 @@ import { Calendar, Clock, Share2, Bookmark, ArrowRight, Heart } from "lucide-rea
 import Link from "next/link";
 import { BASE_URL } from "@/lib/constant";
 import { DEFAULT_BLOG_IMAGE } from "@/lib/constant";
+import { DEFAULT_ARTICLE_OF_THE_DAY } from "@/lib/constant";
 function ArticleOfTheDay() {
   const [article, setArticle] = useState(null);
 
@@ -23,6 +24,7 @@ function ArticleOfTheDay() {
         }
       } catch (error) {
         console.error("Error fetching article:", error);
+        setArticle(DEFAULT_ARTICLE_OF_THE_DAY)
       }
     }
     fetchArticle();
