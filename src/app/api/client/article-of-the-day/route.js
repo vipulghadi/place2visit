@@ -9,7 +9,9 @@ export async function GET() {
     // ✅ Fetch the latest created article and populate place details
     const blog = await Blog.findOne()
       .sort({ createdAt: -1 }) // Sort by newest
-      .populate("place", "name state country");
+      .populate("country", "name")
+      .populate("state", "name")
+      .populate("place", "name")
 
     if (!blog) {
       return NextResponse.json(
@@ -21,11 +23,16 @@ export async function GET() {
     // ✅ Format response
     const article = {
       cover_image: blog.article.cover_images || [],
+      meta_title:blog.meta_title,
+      meta_description:blog.meta_description,
+      createdAt:blog.createdAt,
       title: blog.article.title,
       place_name: blog.place?.name || "Unknown",
-      state: blog.place?.state || "Unknown",
-      country: blog.place?.country || "Unknown",
+      state_name: blog.state?.name || "Unknown",
+      country_name: blog.country?.name || "Unknown",
       first_section: blog.article.sections?.[0]?.text || "No content available",
+      tags:blog.tags,
+      slug:blog.slug
     };
 
     return NextResponse.json(

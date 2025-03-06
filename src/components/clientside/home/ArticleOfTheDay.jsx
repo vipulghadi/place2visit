@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Card, CardDescription } from "@/components/ui/card";
@@ -9,6 +10,25 @@ import { Calendar, Clock, Share2, Bookmark, ArrowRight, Heart } from "lucide-rea
 import Link from "next/link";
 
 function ArticleOfTheDay() {
+  const [article, setArticle] = useState(null);
+
+  useEffect(() => {
+    async function fetchArticle() {
+      try {
+        const response = await fetch("http://localhost:3000/api/client/article-of-the-day");
+        const result = await response.json();
+        if (result.success) {
+          setArticle(result.data);
+        }
+      } catch (error) {
+        console.error("Error fetching article:", error);
+      }
+    }
+    fetchArticle();
+  }, []);
+
+  if (!article) return <p>Loading...</p>;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -24,24 +44,15 @@ function ArticleOfTheDay() {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">
               Article of the Day
             </h2>
-            <p className="text-gray-600 text-sm sm:text-base max-w-2xl">
-              Our editors' handpicked selection to inspire your next adventure.
-            </p>
           </div>
         </div>
 
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
+        <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
           <Card className="overflow-hidden border-none shadow-xl flex flex-col md:flex-row">
-            {/* Image Section */}
             <div className="relative w-full h-64 sm:h-72 md:h-[400px] md:w-1/2 overflow-hidden group">
               <Image
-                src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?q=80&w=1420&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Article of the day"
+                src={article.cover_image[0] || "/fallback-image.jpg"}
+                alt={article.title}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 priority
@@ -55,29 +66,26 @@ function ArticleOfTheDay() {
               </div>
             </div>
 
-            {/* Content Section */}
             <div className="w-full md:w-1/2 bg-white p-6 sm:p-8 md:p-10 flex flex-col justify-between">
               <div className="space-y-4">
                 <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                  The Future of Travel: Sustainable Tourism in 2025
+                  {article.title}
                 </h3>
                 <div className="flex items-center space-x-4 text-xs sm:text-sm text-gray-500">
                   <div className="flex items-center">
                     <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                    <span>May 18, 2024</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                    <span>8 min read</span>
+                    <span>{new Date(article.createdAt).toDateString()}</span>
                   </div>
                 </div>
                 <CardDescription className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                  Explore how sustainable tourism is reshaping the travel industry. From carbon-neutral accommodations to community-based experiences, discover how you can make a positive impact while exploring the world's most beautiful destinations.
+                  {article.first_section}
                 </CardDescription>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary" className="bg-gray-100 text-xs sm:text-sm">Sustainable Travel</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-xs sm:text-sm">Eco Tourism</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-xs sm:text-sm">Future Trends</Badge>
+                  {article.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="bg-gray-100 text-xs sm:text-sm">
+                      {tag}
+                    </Badge>
+                  ))}
                 </div>
               </div>
 
@@ -93,8 +101,8 @@ function ArticleOfTheDay() {
                     <Heart className="h-4 w-4" />
                   </Button>
                 </div>
-                <Link href="/article/sustainable-tourism-2025">
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 sm:px-6 sm:py-2 w-full sm:w-auto text-sm sm:text-base">
+                <Link href={`/article/${article.slug}`}>
+                  <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-4 py-2 sm:px-6 sm:py-2 w-full sm:w-auto text-sm sm:text-base cursor-pointer">
                     Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>

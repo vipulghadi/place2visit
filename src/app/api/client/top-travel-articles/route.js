@@ -12,27 +12,17 @@ export async function GET() {
     // ✅ Fetch latest 10 blogs and populate place, state, and country details
     const blogs = await Blog.find()
       .sort({ createdAt: -1 }) // Sort by most recent
-      .limit(10)
-      .populate({
-        path: "place",
-        populate: [
-          { path: "state", select: "name" }, 
-          { path: "country", select: "name" }
-        ]
-      });
+      .limit(8)
+      .populate("country", "name")
+      .populate("state", "name")
+      .populate("place", "name")
+      .select("slug title article.cover_images meta_title meta_description tags ")
 
     // ✅ Format response
-    const articles = blogs.map(blog => ({
-      cover_image: blog.article.cover_images || [], // Fallback image array
-      title: blog.article.title,
-      place_name: blog.place?.name || "Unknown",
-      state: blog.place?.state?.name || "Unknown",
-      country: blog.place?.country?.name || "Unknown"
-    }));
 
     return NextResponse.json(
       {
-        data: articles,
+        data: blogs,
         message: "Top articles to read now",
         success: true
       },

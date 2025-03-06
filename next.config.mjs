@@ -4,12 +4,15 @@ const nextConfig = {
       remotePatterns: [
         {
           protocol: "https",
-          hostname: "images.unsplash.com", // Add allowed image host
+          hostname: "images.unsplash.com",
+        },
+        {
+          protocol: "https",
+          hostname: "place2visit.s3.ap-south-1.amazonaws.com",
         },
       ],
     },
   };
   
-  export default nextConfig; // ✅ Use `export default` instead of `module.exports`
-  
+  export default nextConfig;
   

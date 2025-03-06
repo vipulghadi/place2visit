@@ -21,7 +21,7 @@ export default function Component() {
           <Link href="/popular" className="text-sm font-medium transition-colors hover:text-primary" prefetch={false}>
             Popular Places
           </Link>
-          <ReportErrorDialog/>
+        
 <SubscribeToUs/>
         </nav>
 

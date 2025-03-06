@@ -1,47 +1,13 @@
-"use client"
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Clock, ArrowLeft, ArrowRight } from 'lucide-react';
-import PlaceSearchBar from '@/components/clientside/PlaceSeachBar';
-import BlogOverviewCard from '@/components/clientside/BlogOverviewCard';
+"use client";
 
-// Dummy data for places
-const dummyPlaces = [
-  {
-    id: 1,
-    name: "Beautiful Paris Adventure",
-    slug: "paris-adventure",
-    category: "City",
-    readTime: "5 min read",
-    description: "Discover the magic of Paris through its iconic landmarks, hidden cafes, and charming neighborhoods.",
-    image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=1000",
-    date: "Feb 15, 2024"
-  },
-  {
-    id: 2,
-    name: "Tokyo Night Life",
-    slug: "tokyo-night-life",
-    category: "Urban",
-    readTime: "7 min read",
-    description: "Experience the vibrant nightlife of Tokyo, from neon-lit streets to traditional izakayas.",
-    image: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&q=80&w=1000",
-    date: "Feb 14, 2024"
-  },
-  {
-    id: 3,
-    name: "New York City Guide",
-    slug: "nyc-guide",
-    category: "City",
-    readTime: "6 min read",
-    description: "Your ultimate guide to exploring the Big Apple, from Manhattan to Brooklyn.",
-    image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&q=80&w=1000",
-    date: "Feb 13, 2024"
-  },
-  // Add more dummy data as needed
-];
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import PlaceSearchBar from "@/components/clientside/PlaceSearchBar";
+import BlogOverviewCard from "@/components/clientside/BlogOverviewCard";
+import { BASE_URL } from "@/lib/constant";
 
-
-
+// Pagination Component
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   return (
     <div className="flex items-center justify-center gap-2 mt-8">
@@ -52,12 +18,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       >
         <ArrowLeft className="h-5 w-5" />
       </button>
-      
+
       {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
         <button
           key={page}
           onClick={() => onPageChange(page)}
-          className={`w-10 h-10 rounded-lg ${
+          className={`w-10 h-10 rounded-lg  cursor-pointer ${
             currentPage === page
               ? "bg-blue-500 text-white"
               : "hover:bg-gray-100"
@@ -66,11 +32,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           {page}
         </button>
       ))}
-      
+
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         <ArrowRight className="h-5 w-5" />
       </button>
@@ -78,79 +44,88 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   );
 };
 
+// Main SearchResults Component
 function SearchResults() {
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [filteredPlaces, setFilteredPlaces] = useState(dummyPlaces);
+  const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [totalPages, setTotalPages] = useState(1);
   const placesPerPage = 6;
 
-  useEffect(() => {
-    // Get search parameters from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const query = urlParams.get('query') || "";
-    const type = urlParams.get('type') || "";
-    
-    setSearchQuery(query);
-    
-    // Filter places based on search query and type
-    const filtered = dummyPlaces.filter(place => {
-      const matchesQuery = place.name.toLowerCase().includes(query.toLowerCase()) ||
-                          place.description.toLowerCase().includes(query.toLowerCase());
-      const matchesType = !type || place.category.toLowerCase() === type.toLowerCase();
-      return matchesQuery && matchesType;
-    });
-    
-    setFilteredPlaces(filtered);
-    setCurrentPage(1);
-  }, []);
+  // Fetch places with pagination
+  const fetchPlaces = async (query = "", type = "", page = 1) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `${BASE_URL}/api/client/search-results?query=${encodeURIComponent(
+          query
+        )}&type=${encodeURIComponent(type)}&page=${page}&limit=${placesPerPage}`
+      );
+      const data = await response.json();
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    const filtered = dummyPlaces.filter(place =>
-      place.name.toLowerCase().includes(query.toLowerCase()) ||
-      place.description.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredPlaces(filtered);
-    setCurrentPage(1);
-    
-    // Update URL with search query
-    const newUrl = new URL(window.location);
-    newUrl.searchParams.set('query', query);
-    window.history.pushState({}, '', newUrl);
+      if (response.ok && data.success) {
+        setPlaces(data.data || []);
+        setTotalPages(data.pagination.totalPages || 1); // Assuming API returns totalPages
+      } else {
+        setPlaces([]);
+        setError(data.message || "Failed to fetch places");
+      }
+    } catch (err) {
+      console.error("Error fetching places:", err);
+      setPlaces([]);
+      setError("An error occurred while fetching places");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredPlaces.length / placesPerPage);
-  const startIndex = (currentPage - 1) * placesPerPage;
-  const endIndex = startIndex + placesPerPage;
-  const currentPlaces = filteredPlaces.slice(startIndex, endIndex);
+  // Sync state with URL query params and fetch data
+  useEffect(() => {
+    const query = searchParams.get("query") || "";
+    const type = searchParams.get("type") || "";
+    setSearchQuery(query);
+    fetchPlaces(query, type, 1);
+    setCurrentPage(1);
+  }, [searchParams]);
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    fetchPlaces(searchQuery, "", newPage);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12">
       <div className="container mx-auto px-4">
-        <PlaceSearchBar onSearch={handleSearch} initialQuery={searchQuery} />
-        
+        <PlaceSearchBar onSearch={(query) => fetchPlaces(query, "", 1)} initialQuery={searchQuery} />
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {searchQuery ? `Search Results for "${searchQuery}"` : "All Destinations"}
           </h1>
           <p className="text-gray-600">
-            {filteredPlaces.length} {filteredPlaces.length === 1 ? 'result' : 'results'} found
+            {loading ? "Loading..." : error ? error : `${places.length} results found`}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {currentPlaces.map((place) => (
-            <BlogOverviewCard key={place.id} place={place} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center text-gray-500">Loading places...</div>
+        ) : error ? (
+          <div className="text-center text-red-500">{error}</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {places.map((place) => (
+              <BlogOverviewCard key={place.slug} place={place} />
+            ))}
+          </div>
+        )}
 
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
+        {totalPages > 1 && !loading && !error && (
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         )}
       </div>
     </div>

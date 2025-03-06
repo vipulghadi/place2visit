@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Search, Globe, Plane, Compass, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import PlaceSearchBar from "../PlaceSeachBar";
+import PlaceSearchBar from "../PlaceSearchBar";
 import { cn } from "@/lib/utils";
 
 export default function HeroSection() {
